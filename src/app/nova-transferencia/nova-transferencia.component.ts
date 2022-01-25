@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { TransfersService } from '../services/transfers.service';
 @Component({
   selector: 'nova-transferencia',
   templateUrl: './nova-transferencia.component.html',
@@ -6,7 +7,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 })
 export class NovaTransferenciaComponent implements OnInit {
 
-  constructor() { }
+  constructor(private service: TransfersService) {}
 
   ngOnInit(): void {
   }
@@ -18,9 +19,14 @@ export class NovaTransferenciaComponent implements OnInit {
 
   transferir(){
     console.log('Solicitada nova transferência.');
+
     const emitValue = {value: this.value, destiny: this.destiny};
-    this.toTransfer.emit(emitValue);
-    this.clearFields();
+
+    this.service.addTransfer(emitValue).subscribe(_ => {
+      this.clearFields();
+    },
+    (error) => console.log(error)
+    );
   }
 
   clearFields() {
